@@ -2,7 +2,6 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, RadarChart, Radar, PolarGrid, PolarAngleAxis,
 } from 'recharts';
-import { students } from '../data/mockData';
 
 const SKILLS = [
   { key: 'clarity',    label: 'Clarity',    color: '#3D7A4F' },
@@ -28,7 +27,7 @@ function CustomTooltip({ active, payload, label }) {
   );
 }
 
-function StudentGrid({ onSelect }) {
+function StudentGrid({ students, onSelect }) {
   return (
     <div className="p-4 sm:p-8 max-w-6xl mx-auto">
       <div className="mb-6">
@@ -331,7 +330,7 @@ function StudentDetail({ student, onBack }) {
   );
 }
 
-export default function Reports({ selectedStudent, setSelectedStudent }) {
-  if (!selectedStudent) return <StudentGrid onSelect={setSelectedStudent} />;
+export default function Reports({ students, selectedStudent, setSelectedStudent }) {
+  if (!selectedStudent) return <StudentGrid students={students} onSelect={setSelectedStudent} />;
   return <StudentDetail student={selectedStudent} onBack={() => setSelectedStudent(null)} />;
 }

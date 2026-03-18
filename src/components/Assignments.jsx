@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { students, assignment as activeAssignment } from '../data/mockData';
+import { supabase } from '../lib/supabase';
 
 const SPEECH_TYPES = [
   'Congressional', 'Lincoln-Douglas', 'Policy', 'Public Forum',
@@ -7,20 +7,68 @@ const SPEECH_TYPES = [
 ];
 const TIME_LIMITS = [1, 2, 3, 5, 7, 10];
 
-export default function Assignments() {
+export default function Assignments({ students, assignment: activeAssignment, refetch }) {
   const [form, setForm] = useState({ topic: '', speechType: 'Congressional', timeLimit: 2, deadline: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
 
   const completedCount = Object.values(activeAssignment.completions).filter(Boolean).length;
   const completionPct = Math.round((completedCount / students.length) * 100);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
+    setSaving(true);
+    setError(null);
+
+    try {
+      const deadline = form.deadline;
+      const today = new Date();
+      const deadlineDate = new Date(deadline);
+      const daysUntilDue = Math.ceil((deadlineDate - today) / (1000 * 60 * 60 * 24));
+
+      // Insert into assignments table
+      const { data: newAssignment, error: insertError } = await supabase
+        .from('assignments')
+        .insert({
+          topic: form.topic,
+          speech_type: form.speechType,
+          time_limit: form.timeLimit,
+          deadline: deadline,
+          days_until_due: daysUntilDue,
+          assigned_by: 'Ms. Patel',
+        })
+        .select()
+        .single();
+
+      if (insertError) throw insertError;
+
+      // Insert completions for all students (all false / not yet completed)
+      const completionRows = students.map((student) => ({
+        assignment_id: newAssignment.id,
+        student_id: student._uuid || student.id,
+        completed: false,
+      }));
+
+      const { error: completionsError } = await supabase
+        .from('assignment_completions')
+        .insert(completionRows);
+
+      if (completionsError) throw completionsError;
+
+      setSubmitted(true);
       setForm({ topic: '', speechType: 'Congressional', timeLimit: 2, deadline: '' });
-    }, 3000);
+
+      // Refresh data
+      if (refetch) await refetch();
+
+      setTimeout(() => setSubmitted(false), 3000);
+    } catch (err) {
+      console.error('Failed to save assignment:', err);
+      setError(err.message || 'Failed to save assignment. Please try again.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -60,7 +108,6 @@ export default function Assignments() {
                     border: '1px solid #B8DBBF',
                     color: '#4A4A3F',
                     backgroundColor: '#fff',
-                    focusRingColor: '#3D7A4F',
                   }}
                   required
                 />
@@ -117,16 +164,26 @@ export default function Assignments() {
                 />
               </div>
 
+              {error && (
+                <div
+                  className="px-3.5 py-2.5 rounded-xl text-sm"
+                  style={{ backgroundColor: '#FDF2EF', color: '#7A2F1B', border: '1px solid #F5C6B8' }}
+                >
+                  {error}
+                </div>
+              )}
+
               <button
                 type="submit"
-                className="w-full py-3 rounded-xl text-sm font-semibold transition-all"
+                disabled={saving}
+                className="w-full py-3 rounded-xl text-sm font-semibold transition-all disabled:opacity-60"
                 style={
                   submitted
                     ? { backgroundColor: '#3D7A4F', color: '#fff' }
                     : { backgroundColor: '#3D7A4F', color: '#fff', boxShadow: '0 4px 12px rgba(61,122,79,0.3)' }
                 }
               >
-                {submitted ? '✓ Assignment Created!' : 'Assign to Class'}
+                {saving ? 'Saving...' : submitted ? '✓ Assignment Created!' : 'Assign to Class'}
               </button>
             </form>
           </div>

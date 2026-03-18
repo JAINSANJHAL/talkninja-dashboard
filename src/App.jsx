@@ -3,6 +3,7 @@ import Sidebar from './components/Sidebar';
 import Roster from './components/Roster';
 import Assignments from './components/Assignments';
 import Reports from './components/Reports';
+import { useData } from './hooks/useData';
 
 const NAV_ITEMS = [
   {
@@ -31,9 +32,22 @@ const NAV_ITEMS = [
   },
 ];
 
+function LoadingSpinner() {
+  return (
+    <div className="flex items-center justify-center h-full w-full">
+      <div
+        className="w-10 h-10 rounded-full border-4 border-t-transparent animate-spin"
+        style={{ borderColor: '#3D7A4F', borderTopColor: 'transparent' }}
+      />
+    </div>
+  );
+}
+
 export default function App() {
   const [activeTab, setActiveTab] = useState('roster');
   const [selectedStudent, setSelectedStudent] = useState(null);
+
+  const { students, assignment, loading, refetch } = useData();
 
   const handleStudentClick = (student) => {
     setSelectedStudent(student);
@@ -75,10 +89,32 @@ export default function App() {
 
         {/* Scrollable content */}
         <main className="flex-1 overflow-y-auto pb-20 md:pb-0">
-          {activeTab === 'roster' && <Roster onStudentClick={handleStudentClick} />}
-          {activeTab === 'assignments' && <Assignments />}
-          {activeTab === 'reports' && (
-            <Reports selectedStudent={selectedStudent} setSelectedStudent={setSelectedStudent} />
+          {loading ? (
+            <LoadingSpinner />
+          ) : (
+            <>
+              {activeTab === 'roster' && (
+                <Roster
+                  students={students}
+                  assignment={assignment}
+                  onStudentClick={handleStudentClick}
+                />
+              )}
+              {activeTab === 'assignments' && (
+                <Assignments
+                  students={students}
+                  assignment={assignment}
+                  refetch={refetch}
+                />
+              )}
+              {activeTab === 'reports' && (
+                <Reports
+                  students={students}
+                  selectedStudent={selectedStudent}
+                  setSelectedStudent={setSelectedStudent}
+                />
+              )}
+            </>
           )}
         </main>
 

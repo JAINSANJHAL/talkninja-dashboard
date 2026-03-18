@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { students, assignment } from '../data/mockData';
 
 function scoreStyle(score) {
   if (score >= 85) return { bg: '#E8F5EA', text: '#1F4D2E' };
@@ -18,7 +17,7 @@ function formatLastActive(dateStr) {
   return `${Math.floor(diff / 7)} weeks ago`;
 }
 
-export default function Roster({ onStudentClick }) {
+export default function Roster({ students, assignment, onStudentClick }) {
   const [sortBy, setSortBy] = useState('name');
 
   const activeCount = students.filter((s) => s.active).length;
