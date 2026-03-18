@@ -30,15 +30,15 @@ function CustomTooltip({ active, payload, label }) {
 
 function StudentGrid({ onSelect }) {
   return (
-    <div className="p-8 max-w-6xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold" style={{ color: '#1F4D2E' }}>Reports</h1>
+    <div className="p-4 sm:p-8 max-w-6xl mx-auto">
+      <div className="mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold" style={{ color: '#1F4D2E' }}>Reports</h1>
         <p className="mt-1 text-sm" style={{ color: '#4A4A3F', opacity: 0.7 }}>
-          Click a student to view their detailed skill breakdown
+          Tap a student to view their detailed skill breakdown
         </p>
       </div>
 
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
         {students.map((student) => {
           const latest = student.sessions[student.sessions.length - 1];
           const prev   = student.sessions[student.sessions.length - 2];
@@ -134,7 +134,7 @@ function StudentDetail({ student, onBack }) {
   const radarData = SKILLS.map((s) => ({ skill: s.label, score: latest[s.key], fullMark: 100 }));
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
+    <div className="p-4 sm:p-8 max-w-6xl mx-auto">
       <button
         onClick={onBack}
         className="flex items-center gap-2 mb-6 text-sm font-medium transition-colors group"
@@ -147,17 +147,17 @@ function StudentDetail({ student, onBack }) {
       </button>
 
       {/* Header card */}
-      <div className="bg-white rounded-2xl shadow-sm p-6 mb-6" style={{ border: '1px solid #E8F5EA' }}>
-        <div className="flex items-center gap-5">
+      <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 mb-6" style={{ border: '1px solid #E8F5EA' }}>
+        <div className="flex items-center gap-4 flex-wrap">
           <div
-            className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-xl font-bold shrink-0"
+            className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center text-white text-xl font-bold shrink-0"
             style={{ backgroundColor: student.color }}
           >
             {student.initials}
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-xl font-bold" style={{ color: '#1F4D2E' }}>{student.name}</h1>
+              <h1 className="text-lg sm:text-xl font-bold" style={{ color: '#1F4D2E' }}>{student.name}</h1>
               <span
                 className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
                 style={
@@ -178,7 +178,7 @@ function StudentDetail({ student, onBack }) {
               <span style={{ color: '#8A7200' }}>⚡ {student.xp} XP</span>
             </div>
           </div>
-          <div className="flex gap-6 shrink-0">
+          <div className="flex gap-4 sm:gap-6 w-full sm:w-auto justify-around sm:justify-start shrink-0">
             {[
               { label: 'Sessions',    value: student.sessionsCompleted, color: '#1F4D2E' },
               { label: 'Avg Score',   value: `${student.avgScore}%`,    color: '#1F4D2E' },
@@ -193,7 +193,7 @@ function StudentDetail({ student, onBack }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6">
         {/* Skill bars + radar */}
         <div className="space-y-5">
           <div className="bg-white rounded-2xl shadow-sm p-5" style={{ border: '1px solid #E8F5EA' }}>
@@ -229,7 +229,7 @@ function StudentDetail({ student, onBack }) {
         </div>
 
         {/* Charts */}
-        <div className="col-span-2 space-y-5">
+        <div className="lg:col-span-2 space-y-5">
           <div className="bg-white rounded-2xl shadow-sm p-5" style={{ border: '1px solid #E8F5EA' }}>
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-semibold text-sm" style={{ color: '#1F4D2E' }}>Overall Score Trend</h2>

@@ -24,17 +24,17 @@ export default function Assignments() {
   };
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold" style={{ color: '#1F4D2E' }}>Assignments</h1>
+    <div className="p-4 sm:p-8 max-w-6xl mx-auto">
+      <div className="mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold" style={{ color: '#1F4D2E' }}>Assignments</h1>
         <p className="mt-1 text-sm" style={{ color: '#4A4A3F', opacity: 0.7 }}>
           Create and manage speech challenges for your class
         </p>
       </div>
 
-      <div className="grid grid-cols-3 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-start">
         {/* Create form */}
-        <div className="col-span-1">
+        <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl shadow-sm p-6" style={{ border: '1px solid #E8F5EA' }}>
             <div className="flex items-center gap-2 mb-5">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#E8F5EA' }}>
@@ -133,7 +133,7 @@ export default function Assignments() {
         </div>
 
         {/* Active assignments */}
-        <div className="col-span-2 space-y-5">
+        <div className="lg:col-span-2 space-y-5">
           <div className="flex items-center justify-between">
             <h2 className="font-semibold" style={{ color: '#1F4D2E' }}>Active Assignments</h2>
             <span className="text-xs" style={{ color: '#4A4A3F', opacity: 0.45 }}>1 active</span>
@@ -197,7 +197,7 @@ export default function Assignments() {
               <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: '#4A4A3F', opacity: 0.45 }}>
                 Student Status
               </p>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {students.map((student) => {
                   const done = activeAssignment.completions[student.id];
                   return (
